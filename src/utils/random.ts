@@ -1,5 +1,5 @@
 
-const randomValue = (min:number = 1, max:number = 100) => Math.floor(Math.random() * (max - min + 1) + min)
+const randomValue = (min:number = 1, max:number = 100) => Math.floor(Math.random() * (max - min + 1) + min);
 
 export const uuidv4 = () => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -8,10 +8,10 @@ export const uuidv4 = () => {
   });
 }
 
-export const randomArr = (size:number = 20): Array<number> => [...Array(size)].map(() => randomValue())
+export const randomArr = (size:number = 20): Array<number> => [...Array(size)].map(() => randomValue());
 
-export const nearlySortedArr = (size: number = 20): Array<number> => randomArr(size).sort().map(num => randomValue(0.8 * num, 1.2 * num))
+export const nearlySortedArr = (size: number = 20): Array<number> => sortedArr(size).map(num => randomValue(0.7 * num, 1.3 * num) || num);
 
-export const reversedSortedArr = (size: number = 20): Array<number> => randomArr(size).sort().reverse()
+export const reversedSortedArr = (size: number = 20): Array<number> => sortedArr(size).reverse();
 
-export const sortedArr = (size: number = 20): Array<number> => randomArr(size).sort()
+export const sortedArr = (size: number = 20): Array<number> => randomArr(size).sort((a, b) => a > b ? 1 : -1);
