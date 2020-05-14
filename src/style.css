@@ -20,3 +20,11 @@
 .row--header {
     height: 100px;
 }
+
+.table {
+    max-width: 900px; margin: 0 auto;
+}
+
+.cell-result {
+    padding: 5px;
+}

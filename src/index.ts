@@ -1,6 +1,9 @@
 import App from './dom/App'
-import TableCell from './dom/TableCell'
-import TableHeader from './dom/TableHeader'
+import createTable from './dom/createTable'
+import createTableRow from './dom/createTableRow'
+import createTableHeader from './dom/createTableHeader'
+import { updateResultCell } from './dom/createResultCell'
+import './style.css';
 
 import QuickSort from './algorithms/QuickSort'
 import BubbleSort from './algorithms/BubbleSort'
@@ -27,30 +30,15 @@ const results = samples.map(({name: sortName, sample}) => {
   })
 })
 
-const ExamplesArray = results.map(row => {
-  return `
-    <div style="display: flex;">
-      ${[{ name: row[0].sortName }, ...row].map(({ name, uuid, sample }) => {
-        if (name) return TableCell.renderName(name)
+const resultRows = results.map(rowResults => createTableRow(rowResults))
 
-        return TableCell.init(sample, uuid)
-      }).join('')}
-    </div>
-  `
-}).join('')
+const resultRowsTemplate = resultRows.map(([template]) => template).join('')
 
-// const element = document.createElement('div');
-// element.innerHTML = `
-//   <div style="max-width: 900px; margin: 0 auto;">
-//     ${ExamplesArray}
-//   </div>
-// `
+const [tableHeaderTemplate] = createTableHeader(sorts)
 
-// document.body.appendChild(element)
+const [tableTemplate] = createTable(tableHeaderTemplate + resultRowsTemplate)
 
-const tableHeader = TableHeader.render(sorts)
-
-App.render(tableHeader + ExamplesArray)
+App.render(tableTemplate)
 
 const snapshotLengths = results.map(elements => elements.map(el => el.instance.snapshots.length)).flat()
 const maxIterations = Math.max.apply(null, snapshotLengths)
@@ -61,7 +49,7 @@ const draw = (iter = 0) => () => {
   if (iter < maxIterations) {
     flattenResults.forEach(({instance, uuid}) => {
       if (instance.snapshots[iter] ) {
-        TableCell.render(instance.snapshots[iter].arr, uuid)
+        updateResultCell(instance.snapshots[iter].arr, uuid)
       }
     })
 
@@ -90,3 +78,4 @@ requestAnimationFrame(draw(0))
 // - worse
 // - nearly sorted
 // - reversed
+
