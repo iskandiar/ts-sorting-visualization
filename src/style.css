@@ -1,0 +1,22 @@
+.column {
+    flex: 1 1 auto;
+}
+
+.name-column {
+    width: 100px;
+}
+
+.cell--play {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.row {
+    display: flex;
+}
+
+.row--header {
+    height: 100px;
+}
