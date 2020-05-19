@@ -12,7 +12,9 @@ const createTableHeader = (sorts: Array<object>) => {
 
   const content = firstColumnHeader[0] + nameColumnHeaders.map(([content]) => content).join('');
 
-  return createElement(content, { type: 'div', class: 'row row--header' });
+  return createElement(content, { type: 'div', class: 'row row--header', listeners: {
+    click: () => { console.log() }
+  } });
 }
 
 export default createTableHeader;

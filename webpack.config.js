@@ -32,7 +32,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin({ cleanStaleWebpackAssets: false }),
     new HtmlWebpackPlugin({
-      title: 'Development',
+      title: 'Sorting algorithms - comparison',
     }),
   ],
 };

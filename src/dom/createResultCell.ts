@@ -11,17 +11,14 @@ const renderContent = (arr: Array<number>): string => {
   return arr.map(value => renderBar(value / max * 100)).join("");
 }
 
-const createResultCell = (arr: Array<number>, id: string) => {
+const createResultCell = (arr: Array<number>) => {
   const content = renderContent(arr);
 
-  return createElement(content, { type: 'div', class: 'column cell-result', id});
-}
+  const [template, update] = createElement(content, { type: 'div', class: 'column cell-result'});
 
-export const updateResultCell = (arr: Array<number>, id: string) => {
-  const content = renderContent(arr);
-  const element = document.getElementById(id);
+  const overrideUpdate = (arr) => update(renderContent(arr));
 
-  element.innerHTML = content;
+  return [template, overrideUpdate];
 }
 
 export default createResultCell;

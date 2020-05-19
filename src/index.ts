@@ -2,12 +2,12 @@ import App from './dom/App'
 import createTable from './dom/createTable'
 import createTableRow from './dom/createTableRow'
 import createTableHeader from './dom/createTableHeader'
-import { updateResultCell } from './dom/createResultCell'
+import createResultCell from './dom/createResultCell'
 import './style.css';
 
 import QuickSort from './algorithms/QuickSort'
 import BubbleSort from './algorithms/BubbleSort'
-import { randomArr, uuidv4, nearlySortedArr, reversedSortedArr, sortedArr } from './utils/random'
+import { randomArr, nearlySortedArr, reversedSortedArr, sortedArr } from './utils/random'
 
 const sorts = [
   { name: 'Quick Sort', klass: QuickSort },
@@ -22,17 +22,25 @@ const samples = [
 ]
 
 const results = samples.map(({name: sortName, sample}) => {
-  return sorts.map(({name, klass: Sort}) => {
-    const sortInstance = new Sort([...sample])
+  return sorts.map(({ klass }) => {
+    const sortInstance = new klass([...sample])
     sortInstance.sort()
 
-    return { instance: sortInstance, uuid: uuidv4(), sortName, algorithmName: name, sample }
+    return { instance: sortInstance, sortName, sample }
   })
 })
 
-const resultRows = results.map(rowResults => createTableRow(rowResults))
+const resultRows = results.map(rowResults => {
+  const [templates, updates] = rowResults
+    .map((result) => createResultCell(result.sample))
+    .reduce(([templates, updates], [template, update]) => (
+      [templates + template, [...updates, update]]
+    ), ['', []]);
 
-const resultRowsTemplate = resultRows.map(([template]) => template).join('')
+  return [templates, updates, rowResults];
+})
+
+const resultRowsTemplate = resultRows.map(([template,,row]) => createTableRow(template, row)).map(([template]) => template).join('')
 
 const [tableHeaderTemplate] = createTableHeader(sorts)
 
@@ -44,12 +52,13 @@ const snapshotLengths = results.map(elements => elements.map(el => el.instance.s
 const maxIterations = Math.max.apply(null, snapshotLengths)
 
 const flattenResults = results.flat()
+const flattenCellUpdates = resultRows.map(([,update]) => update).flat()
 
 const draw = (iter = 0) => () => {
   if (iter < maxIterations) {
-    flattenResults.forEach(({instance, uuid}) => {
+    flattenResults.forEach(({instance}, idx) => {
       if (instance.snapshots[iter] ) {
-        updateResultCell(instance.snapshots[iter].arr, uuid)
+        flattenCellUpdates[idx](instance.snapshots[iter].arr)
       }
     })
 
@@ -78,4 +87,3 @@ requestAnimationFrame(draw(0))
 // - worse
 // - nearly sorted
 // - reversed
-

@@ -1,7 +1,7 @@
 import createElement from './createElement';
 
-const createTable = (content: string) => {
-  return createElement(content, {type: 'div', class: 'table'});
+const createTable = (content: string, init: any) => {
+  return createElement(content, {type: 'div', class: 'table'}, init);
 }
 
 export default createTable;

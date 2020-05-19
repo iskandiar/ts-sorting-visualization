@@ -3,11 +3,11 @@ import { uuidv4 } from '../utils/random';
 interface ElementProps {
   class: string;
   type: string;
-  id?: string;
 }
 
-export default function (content: string, element: ElementProps, initDOM?: (element: HTMLElement, id: string) => void): Array<any> {
-  const id = element.id || uuidv4();
+//return tuple (TS)
+export default function (content: string, element: ElementProps): Array<any> {
+  const id = uuidv4();
   const template = `
     <${element.type} id="${id}" class="${element.class}">
       ${content}
@@ -15,20 +15,19 @@ export default function (content: string, element: ElementProps, initDOM?: (elem
   `;
 
 
-  const update = (content: string) => {
+  const update = function(newContent){
     const element = document.getElementById(id);
 
-    element.innerHTML = content;
+    element.innerHTML = newContent;
   }
 
-  const init = () => {
-    if(!initDOM) return () => {};
+  // const init = () => {
+  //   if(!initDOM) return () => {};
 
-    const element = document.getElementById(id);
+  //   const element = document.getElementById(id);
 
-    return initDOM(element, id);
-  }
+  //   return initDOM(element, id);
+  // }
 
-
-  return [template, update, init];
+  return [template, update];
 }
