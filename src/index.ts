@@ -1,4 +1,4 @@
-import App from './dom/App'
+import createApp from './dom/createApp'
 import createTable from './dom/createTable'
 import createTableRow from './dom/createTableRow'
 import createTableHeader from './dom/createTableHeader'
@@ -30,29 +30,35 @@ const results = samples.map(({name: sortName, sample}) => {
   })
 })
 
-const resultRows = results.map(rowResults => {
-  const [templates, updates] = rowResults
-    .map((result) => createResultCell(result.sample))
-    .reduce(([templates, updates], [template, update]) => (
-      [templates + template, [...updates, update]]
-    ), ['', []]);
+const resultCellRows = results
+  .map(rowResults => {
+    const [templates, updates] = rowResults
+      .map((result) => createResultCell(result.sample))
+      .reduce(([templates, updates], [template, update]) => (
+        [templates + template, [...updates, update]]
+      ), ['', []]);
 
-  return [templates, updates, rowResults];
-})
+    return [templates, updates, rowResults];
+  })
 
-const resultRowsTemplate = resultRows.map(([template,,row]) => createTableRow(template, row)).map(([template]) => template).join('')
+const handleClick = ({ sortType, sampleType }): void => console.log('handleClick', sortType, sampleType) || startDrawing()
 
-const [tableHeaderTemplate] = createTableHeader(sorts)
+const resultRows = resultCellRows.map(([template,,row]) => createTableRow(template, row, handleClick))
 
-const [tableTemplate] = createTable(tableHeaderTemplate + resultRowsTemplate)
+const resultRowsTemplate = resultRows.map(([template]) => template).join('')
+const resultRowsInit = resultRows.map(([, , init]) => init)
 
-App.render(tableTemplate)
+const [tableHeaderTemplate, , tableHeaderInit] = createTableHeader(sorts, handleClick)
+
+const [tableTemplate, , tableInit] = createTable(tableHeaderTemplate + resultRowsTemplate, [...resultRowsInit, tableHeaderInit])
+
+createApp(tableTemplate, tableInit)
 
 const snapshotLengths = results.map(elements => elements.map(el => el.instance.snapshots.length)).flat()
 const maxIterations = Math.max.apply(null, snapshotLengths)
 
 const flattenResults = results.flat()
-const flattenCellUpdates = resultRows.map(([,update]) => update).flat()
+const flattenCellUpdates = resultCellRows.map(([,update]) => update).flat()
 
 const draw = (iter = 0) => () => {
   if (iter < maxIterations) {
@@ -68,7 +74,13 @@ const draw = (iter = 0) => () => {
   }
 }
 
-requestAnimationFrame(draw(0))
+function startDrawing(data) {
+  // handle cancel drawing
+  window.cancelAnimationFrame(requestID)
+  requestAnimationFrame(draw(0))
+}
+
+// requestAnimationFrame(draw(0))
 
 // https://www.improgrammer.net/sorting-algorithms-visualized/
 // https://www.toptal.com/developers/sorting-algorithms
@@ -87,3 +99,15 @@ requestAnimationFrame(draw(0))
 // - worse
 // - nearly sorted
 // - reversed
+
+
+// TO-DO:
+// - add more sorts
+// - better styles
+// - sort place indicator (arrow)
+// - fix TS issues
+// - pass size of test as query param + dynamic height of bar
+// - 
+// - 
+// - 
+// - 
