@@ -9,6 +9,8 @@ import QuickSort from './algorithms/QuickSort'
 import BubbleSort from './algorithms/BubbleSort'
 import { randomArr, nearlySortedArr, reversedSortedArr, sortedArr } from './utils/random'
 
+const DELAY = 50;
+
 const sorts = [
   { name: 'Quick Sort', klass: QuickSort },
   { name: 'Bubble Sort', klass: BubbleSort },
@@ -21,15 +23,17 @@ const samples = [
   { name: 'Sorted', sample: sortedArr()},
 ]
 
-const results = samples.map(({name: sortName, sample}) => {
-  return sorts.map(({ klass }) => {
-    const sortInstance = new klass([...sample])
-    sortInstance.sort()
+//Prepare sorting results
+const results = samples.map(({name: sampleType, sample}) => {
+  return sorts.map(({ name: sortType, klass }) => {
+    const instance = new klass([...sample])
+    instance.sort()
 
-    return { instance: sortInstance, sortName, sample }
+    return { instance, sortType, sampleType, sample }
   })
 })
 
+//render cell rows
 const resultCellRows = results
   .map(rowResults => {
     const [templates, updates] = rowResults
@@ -41,14 +45,14 @@ const resultCellRows = results
     return [templates, updates, rowResults];
   })
 
-const handleClick = ({ sortType, sampleType }): void => console.log('handleClick', sortType, sampleType) || startDrawing()
+const handlePlayClick = ({ sortType, sampleType }): void => startDrawing({ sortType, sampleType })
 
-const resultRows = resultCellRows.map(([template,,row]) => createTableRow(template, row, handleClick))
+const resultRows = resultCellRows.map(([template, , row]) => createTableRow(template, row, handlePlayClick))
 
 const resultRowsTemplate = resultRows.map(([template]) => template).join('')
 const resultRowsInit = resultRows.map(([, , init]) => init)
 
-const [tableHeaderTemplate, , tableHeaderInit] = createTableHeader(sorts, handleClick)
+const [tableHeaderTemplate, , tableHeaderInit] = createTableHeader(sorts, handlePlayClick)
 
 const [tableTemplate, , tableInit] = createTable(tableHeaderTemplate + resultRowsTemplate, [...resultRowsInit, tableHeaderInit])
 
@@ -57,27 +61,35 @@ createApp(tableTemplate, tableInit)
 const snapshotLengths = results.map(elements => elements.map(el => el.instance.snapshots.length)).flat()
 const maxIterations = Math.max.apply(null, snapshotLengths)
 
-const flattenResults = results.flat()
+const flattenResults = results.flat().map((el, idx) => ({...el, idx}))
+
 const flattenCellUpdates = resultCellRows.map(([,update]) => update).flat()
 
-const draw = (iter = 0) => () => {
+const draw = (iter = 0, results) => () => {
   if (iter < maxIterations) {
-    flattenResults.forEach(({instance}, idx) => {
+    results.forEach(({idx, instance}) => {
       if (instance.snapshots[iter] ) {
-        flattenCellUpdates[idx](instance.snapshots[iter].arr)
+        const isLastIteration = iter === instance.snapshots.length - 1
+        flattenCellUpdates[idx](instance.snapshots[iter], isLastIteration)
       }
     })
 
     setTimeout(() => {
-      window.requestAnimationFrame(draw(iter + 1));
-    }, 50)
+      window.requestAnimationFrame(draw(iter + 1, results));
+    }, DELAY)
   }
 }
 
-function startDrawing(data) {
-  // handle cancel drawing
-  window.cancelAnimationFrame(requestID)
-  requestAnimationFrame(draw(0))
+function startDrawing({ sortType, sampleType }) {
+  // TO-DO handle cancel drawing
+  const results = flattenResults.filter(result => {
+    if (sortType) return result.sortType === sortType
+    else if (sampleType) return result.sampleType === sampleType
+
+    return true
+  })
+
+  requestAnimationFrame(draw(0, results))
 }
 
 // requestAnimationFrame(draw(0))
@@ -104,7 +116,6 @@ function startDrawing(data) {
 // TO-DO:
 // - add more sorts
 // - better styles
-// - sort place indicator (arrow)
 // - fix TS issues
 // - pass size of test as query param + dynamic height of bar
 // - 

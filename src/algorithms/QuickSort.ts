@@ -22,13 +22,13 @@ export default class QuickSort extends Sort {
     const pivot = this.arr[high]
     let i = low - 1;
 
-    for(let j = low; j <= high -1; j++) {
+    for(let j = low; j <= high - 1; j++) {
       if (this.arr[j] < pivot) {
         i++;
-        this.swap(i, j);
+        this.swap(i, j, [i, j]);
       }
     }
-    this.swap(i +1, high);
+    this.swap(i + 1, high, [i + 1, high]);
 
     return i + 1;
   }

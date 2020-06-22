@@ -6,9 +6,9 @@ export default class Sort {
     this.snapshots = [];
   }
 
-  swap(x: number, y: number): void {
+  swap(x: number, y: number, iterators: Array<number>): void {
     [this.arr[x], this.arr[y]] = [this.arr[y], this.arr[x]];
 
-    this.snapshots.push({arr: [...this.arr], indexes: [x, y]});
+    this.snapshots.push({ arr: [...this.arr], indexes: [x, y], iterators});
   }
 }

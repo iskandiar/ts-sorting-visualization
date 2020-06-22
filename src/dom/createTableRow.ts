@@ -4,8 +4,8 @@ import createPlayIcon from './createPlayIcon';
 const createTableRow = (template: string, row: object, handleClick: (type: string) => void) => {
   const smallPlayIcon = createPlayIcon(16);
 
-  const firstRowCell = createElement(`${row[0].sortName}${smallPlayIcon}`, { type: 'div', class: 'name-column cell--play' }, (el) => {
-    el.addEventListener('click', () => handleClick({sampleType: row[0].sortName}))
+  const firstRowCell = createElement(`${row[0].sampleType}${smallPlayIcon}`, { type: 'div', class: 'name-column cell--play' }, (el) => {
+    el.addEventListener('click', () => handleClick({ sampleType: row[0].sampleType}))
 })
 
   const content = firstRowCell[0] + template;
