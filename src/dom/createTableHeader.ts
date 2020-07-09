@@ -10,7 +10,7 @@ const createTableHeader = (sorts: Array<object>, handleClick: (type: string) => 
     el.addEventListener('click', () => handleClick({ sortType: null, sampleType: null}))
   })
 
-  const nameColumnHeaders = sorts.map((sort) => createElement(`${sort.name}${smallPlayIcon}`, { type: 'div', class: 'column cell--play'}, (el,) => {
+  const nameColumnHeaders = sorts.map((sort) => createElement(`${sort.name}${smallPlayIcon}`, { type: 'div', class: 'column cell--play'}, (el) => {
     el.addEventListener('click', () => handleClick({sortType: sort.name}))
   }))
 

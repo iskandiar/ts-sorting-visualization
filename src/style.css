@@ -27,6 +27,7 @@
 }
 
 .cell-result {
+    position: relative;
     padding: 5px;
 }
 
@@ -36,4 +37,10 @@
 
 .cell-result-bar--iterator {
     background-color: black;
+}
+
+.cell-result-iteration {
+    position: absolute;
+    top: 0;
+    right: 0;
 }

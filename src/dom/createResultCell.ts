@@ -6,14 +6,20 @@ const renderBar = (width: number, isIterator: boolean): string => `
   </div>
 `;
 
-const renderContent = (arr: Array<number>, iterators?: Array<number>, isLastIteration?: Boolean = false): string => {
+const renderContent = (arr: Array<number>, iterators?: Array<number>, state?: Object = {}): string => {
   const max = Math.max.apply(null, arr);
-  return arr.map((value, idx) => 
+
+  const bars = arr.map((value, idx) =>
     renderBar(
       value / max * 100,
-      iterators && iterators.includes(idx) && !isLastIteration
+      iterators && iterators.includes(idx) && state.showIndicators
     )
   ).join("");
+
+  return `
+    <div class="cell-result-iteration">${state.iteration || '' }</div>
+    ${bars}
+  `
 }
 
 const createResultCell = (arr: Array<number>) => {
@@ -21,7 +27,7 @@ const createResultCell = (arr: Array<number>) => {
 
   const [template, update] = createElement(content, { type: 'div', class: 'column cell-result'});
 
-  const overrideUpdate = (element, isLastIteration) => update(renderContent(element.arr, element.iterators, isLastIteration));
+  const overrideUpdate = (element, state) => update(renderContent(element.arr, element.iterators, state));
 
   return [template, overrideUpdate];
 }

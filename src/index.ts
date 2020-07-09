@@ -1,13 +1,12 @@
-import createApp from './dom/createApp'
-import createTable from './dom/createTable'
-import createTableRow from './dom/createTableRow'
-import createTableHeader from './dom/createTableHeader'
-import createResultCell from './dom/createResultCell'
 import './style.css';
+
+import renderApp from './renderApp'
 
 import QuickSort from './algorithms/QuickSort'
 import BubbleSort from './algorithms/BubbleSort'
 import { randomArr, nearlySortedArr, reversedSortedArr, sortedArr } from './utils/random'
+import { prepareResults, getMaxIterations, getFlattenResults, resetResults, updateResults } from './utils/results'
+import { uuidv4 } from './utils/random';
 
 const DELAY = 50;
 
@@ -24,64 +23,29 @@ const samples = [
 ]
 
 //Prepare sorting results
-const results = samples.map(({name: sampleType, sample}) => {
-  return sorts.map(({ name: sortType, klass }) => {
-    const instance = new klass([...sample])
-    instance.sort()
+const results = prepareResults(sorts, samples)
 
-    return { instance, sortType, sampleType, sample }
-  })
-})
+const maxIterations = getMaxIterations(results)
+const flattenResults = getFlattenResults(results)
 
-//render cell rows
-const resultCellRows = results
-  .map(rowResults => {
-    const [templates, updates] = rowResults
-      .map((result) => createResultCell(result.sample))
-      .reduce(([templates, updates], [template, update]) => (
-        [templates + template, [...updates, update]]
-      ), ['', []]);
+const { updateResultCell } = renderApp(results, sorts, startDrawing)
 
-    return [templates, updates, rowResults];
-  })
+let currentDrawId = null;
 
-const handlePlayClick = ({ sortType, sampleType }): void => startDrawing({ sortType, sampleType })
-
-const resultRows = resultCellRows.map(([template, , row]) => createTableRow(template, row, handlePlayClick))
-
-const resultRowsTemplate = resultRows.map(([template]) => template).join('')
-const resultRowsInit = resultRows.map(([, , init]) => init)
-
-const [tableHeaderTemplate, , tableHeaderInit] = createTableHeader(sorts, handlePlayClick)
-
-const [tableTemplate, , tableInit] = createTable(tableHeaderTemplate + resultRowsTemplate, [...resultRowsInit, tableHeaderInit])
-
-createApp(tableTemplate, tableInit)
-
-const snapshotLengths = results.map(elements => elements.map(el => el.instance.snapshots.length)).flat()
-const maxIterations = Math.max.apply(null, snapshotLengths)
-
-const flattenResults = results.flat().map((el, idx) => ({...el, idx}))
-
-const flattenCellUpdates = resultCellRows.map(([,update]) => update).flat()
-
-const draw = (iter = 0, results) => () => {
+const draw = (iter = 0, results, id) => () => {
+  if(id != currentDrawId) return
   if (iter < maxIterations) {
-    results.forEach(({idx, instance}) => {
-      if (instance.snapshots[iter] ) {
-        const isLastIteration = iter === instance.snapshots.length - 1
-        flattenCellUpdates[idx](instance.snapshots[iter], isLastIteration)
-      }
-    })
+    updateResults(results, iter, updateResultCell)
 
     setTimeout(() => {
-      window.requestAnimationFrame(draw(iter + 1, results));
+      window.requestAnimationFrame(draw(iter + 1, results, id));
     }, DELAY)
   }
 }
 
 function startDrawing({ sortType, sampleType }) {
-  // TO-DO handle cancel drawing
+  resetResults(flattenResults, updateResultCell)
+
   const results = flattenResults.filter(result => {
     if (sortType) return result.sortType === sortType
     else if (sampleType) return result.sampleType === sampleType
@@ -89,13 +53,16 @@ function startDrawing({ sortType, sampleType }) {
     return true
   })
 
-  requestAnimationFrame(draw(0, results))
+  currentDrawId = uuidv4()
+
+  requestAnimationFrame(draw(0, results, currentDrawId))
 }
 
 // requestAnimationFrame(draw(0))
 
 // https://www.improgrammer.net/sorting-algorithms-visualized/
 // https://www.toptal.com/developers/sorting-algorithms
+// Rambda?
 
 // Sorting algorithms:
 // selection sort
@@ -118,7 +85,6 @@ function startDrawing({ sortType, sampleType }) {
 // - better styles
 // - fix TS issues
 // - pass size of test as query param + dynamic height of bar
-// - 
-// - 
-// - 
-// - 
+// - timewise stats
+// - update README
+// -   for fun project to learn TS and refresh why we need frameowkrs + different way to render components
