@@ -6,7 +6,7 @@ const renderBar = (width: number, isIterator: boolean): string => `
   </div>
 `;
 
-const renderContent = (arr: Array<number>, iterators?: Array<number>, state: unknown = {}): string => {
+const renderContent = (arr: Array<number>, iterators?: Array<number>, state: any = {}): string => {
   const max = Math.max.apply(null, arr);
 
   const bars = arr.map((value, idx) =>
