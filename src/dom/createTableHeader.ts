@@ -1,8 +1,14 @@
-import createElement from './createElement';
+import createElement, { ElementTuple } from './createElement';
 import createPlayIcon from './createPlayIcon';
 
+// import Sort from './../algorithms/Sort';
 
-const createTableHeader = (sorts: Array<object>, handleClick: (type: string) => void) => {
+export interface SortI {
+  name: string,
+  klass: any
+}
+
+const createTableHeader = (sorts: SortI[], handleClick: ({ sampleType, sortType }) => void): ElementTuple => {
   const bigPlayIcon = createPlayIcon(32);
   const smallPlayIcon = createPlayIcon(16);
 
@@ -11,7 +17,7 @@ const createTableHeader = (sorts: Array<object>, handleClick: (type: string) => 
   })
 
   const nameColumnHeaders = sorts.map((sort) => createElement(`${sort.name}${smallPlayIcon}`, { type: 'div', class: 'column cell--play'}, (el) => {
-    el.addEventListener('click', () => handleClick({sortType: sort.name}))
+    el.addEventListener('click', () => handleClick({ sortType: sort.name, sampleType: null}))
   }))
 
   const content = firstColumnHeader[0] + nameColumnHeaders.map(([content]) => content).join('');

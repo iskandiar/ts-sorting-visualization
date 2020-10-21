@@ -1,11 +1,17 @@
 import createApp from './dom/createApp'
 import createTable from './dom/createTable'
 import createTableRow from './dom/createTableRow'
-import createTableHeader from './dom/createTableHeader'
+import createTableHeader, { SortI } from './dom/createTableHeader'
 import createResultCell from './dom/createResultCell'
 import createResultRows from './dom/createResultRows'
 
-export default function (results, sorts, startDrawing) {
+import { Result } from './utils/results'
+
+export default function (
+  results: Result[][],
+  sorts: SortI[],
+  startDrawing: ({ sortType, sampleType }: { sortType: unknown; sampleType: unknown; }) => void
+  ): Record<string, unknown> {
   //render cell rows
   const resultCellRows = results
     .map(rowResults => {
@@ -19,16 +25,15 @@ export default function (results, sorts, startDrawing) {
     })
 
   const handlePlayClick = ({ sortType, sampleType }): void => startDrawing({ sortType, sampleType })
-
+  
   const resultRows = createResultRows(
-    resultCellRows.map(([template, , row]) => createTableRow(template, row, handlePlayClick))
+    resultCellRows.map(([template, , rowResults]) => createTableRow(template as string, rowResults as Result[], handlePlayClick))
   )
   const tableHeader = createTableHeader(sorts, handlePlayClick)
 
   const [tableTemplate, , tableInit] = createTable(tableHeader, resultRows)
 
   createApp(tableTemplate, tableInit)
-
 
   const updateResultCell = resultCellRows.map(([, update]) => update).flat()
 

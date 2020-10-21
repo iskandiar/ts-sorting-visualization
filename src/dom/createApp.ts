@@ -1,4 +1,4 @@
-export default function(children: string, initDOM: any): void {
+export default function (children: string, initDOM: () => void): void {
   const element = document.createElement('div');
   element.innerHTML = `
       <div>

@@ -1,6 +1,6 @@
-import createElement from './createElement';
+import createElement, { ElementTuple } from './createElement';
 
-const createResultRows = (resultRows: any) => {
+const createResultRows = (resultRows: ElementTuple[]): ElementTuple => {
   const content = resultRows.map(([template]) => template).join('')
   const resultRowsInit = resultRows.map(([, , init]) => init)
 

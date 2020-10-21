@@ -1,12 +1,18 @@
 import { uuidv4 } from '../utils/random';
 
 interface ElementProps {
-  class: string;
+  class?: string;
   type: string;
 }
 
-//return tuple (TS)
-export default function (content: string, element: ElementProps, initDOM?: any): Array<any> {
+export type ElementTuple = [string, (content: string) => void, () => unknown];
+
+//TODO return tuple (TS)
+export default function (
+  content: string,
+  element: ElementProps,
+  initDOM?: (element: HTMLElement, id: string) => void
+): ElementTuple {
   const id = uuidv4();
   const template = `
     <${element.type} id="${id}" class="${element.class}">
@@ -21,7 +27,7 @@ export default function (content: string, element: ElementProps, initDOM?: any):
   }
 
   const init = () => {
-    if(!initDOM) return () => {};
+    if (!initDOM) return () => { }; // eslint-disable-line
 
     const element = document.getElementById(id);
 

@@ -1,5 +1,5 @@
 .column {
-    flex: 1 1 auto;
+    flex: 1 1;
 }
 
 .name-column {
@@ -12,6 +12,24 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    background: #f7f7f7;
+    border-right: 1px solid #dedede;
+    border-bottom: 1px solid #dedede;
+}
+
+.cell-result {
+    border-right: 1px solid #dedede;
+    border-bottom: 1px solid #dedede;
+}
+
+.row--header .cell--play:last-child,
+.row .cell-result:last-child {
+    border-right: 0;
+}
+
+.row:last-child .cell--play,
+.row:last-child .cell-result {
+    border-bottom: 0;
 }
 
 .row {
@@ -24,23 +42,25 @@
 
 .table {
     max-width: 900px; margin: 0 auto;
+    border: 1px solid #dedede;
 }
 
 .cell-result {
     position: relative;
-    padding: 5px;
+    padding: 7px;
 }
 
 .cell-result-bar {
-    background-color: gray;
+    background-color: #acc6ce
 }
 
 .cell-result-bar--iterator {
-    background-color: black;
+    background-color: #5d7982
 }
 
 .cell-result-iteration {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 5px;
+    right: 5px;
+    color: #5d7982;
 }

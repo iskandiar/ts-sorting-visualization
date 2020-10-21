@@ -1,7 +1,8 @@
-import createElement from './createElement';
+import createElement, { ElementTuple } from './createElement';
+import  { Result } from './../utils/results';
 import createPlayIcon from './createPlayIcon';
 
-const createTableRow = (template: string, row: object, handleClick: (type: string) => void) => {
+const createTableRow = (template: string, row: Result[], handleClick: ({ sampleType: string}) => void): ElementTuple => {
   const smallPlayIcon = createPlayIcon(16);
 
   const firstRowCell = createElement(`${row[0].sampleType}${smallPlayIcon}`, { type: 'div', class: 'name-column cell--play' }, (el) => {

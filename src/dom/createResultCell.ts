@@ -6,7 +6,7 @@ const renderBar = (width: number, isIterator: boolean): string => `
   </div>
 `;
 
-const renderContent = (arr: Array<number>, iterators?: Array<number>, state?: Object = {}): string => {
+const renderContent = (arr: Array<number>, iterators?: Array<number>, state: unknown = {}): string => {
   const max = Math.max.apply(null, arr);
 
   const bars = arr.map((value, idx) =>
@@ -17,12 +17,12 @@ const renderContent = (arr: Array<number>, iterators?: Array<number>, state?: Ob
   ).join("");
 
   return `
-    <div class="cell-result-iteration">${state.iteration || '' }</div>
+    <div class="cell-result-iteration">${state.iteration || (state.iteration === 0 ? 0 : (state.iteration || '')) }</div>
     ${bars}
   `
 }
 
-const createResultCell = (arr: Array<number>) => {
+const createResultCell = (arr: number[]): [string, (element: any, state: any) => unknown] => {
   const content = renderContent(arr);
 
   const [template, update] = createElement(content, { type: 'div', class: 'column cell-result'});

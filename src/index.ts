@@ -57,34 +57,3 @@ function startDrawing({ sortType, sampleType }) {
 
   requestAnimationFrame(draw(0, results, currentDrawId))
 }
-
-// requestAnimationFrame(draw(0))
-
-// https://www.improgrammer.net/sorting-algorithms-visualized/
-// https://www.toptal.com/developers/sorting-algorithms
-// Rambda?
-
-// Sorting algorithms:
-// selection sort
-// bubble sort
-// insertion sort
-// shell sort
-// quick sort
-// merge sort
-// tree sort
-
-// types:
-// - random
-// - worse
-// - nearly sorted
-// - reversed
-
-
-// TO-DO:
-// - add more sorts
-// - better styles
-// - fix TS issues
-// - pass size of test as query param + dynamic height of bar
-// - timewise stats
-// - update README
-// -   for fun project to learn TS and refresh why we need frameowkrs + different way to render components

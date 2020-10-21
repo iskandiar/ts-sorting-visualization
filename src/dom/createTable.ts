@@ -1,6 +1,6 @@
-import createElement from './createElement';
+import createElement, { ElementTuple } from './createElement';
 
-const createTable = (tableHeader: any, resultRows: any) => {
+const createTable = (tableHeader: ElementTuple, resultRows: ElementTuple): ElementTuple => {
   const [tableHeaderTemplate, , tableHeaderInit] = tableHeader
   const [resultRowsTemplate, , resultRowsInit] = resultRows
 
