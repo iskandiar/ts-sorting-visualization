@@ -4,6 +4,7 @@ import renderApp from './renderApp'
 
 import QuickSort from './algorithms/QuickSort'
 import BubbleSort from './algorithms/BubbleSort'
+import InsertionSort from './algorithms/InsertionSort'
 import { randomArr, nearlySortedArr, reversedSortedArr, sortedArr } from './utils/random'
 import { prepareResults, getMaxIterations, getFlattenResults, resetResults, updateResults } from './utils/results'
 import { uuidv4 } from './utils/random';
@@ -13,6 +14,7 @@ const DELAY = 50;
 const sorts = [
   { name: 'Quick Sort', klass: QuickSort },
   { name: 'Bubble Sort', klass: BubbleSort },
+  { name: 'Insertion Sort', klass: InsertionSort },
 ]
 
 const samples = [
